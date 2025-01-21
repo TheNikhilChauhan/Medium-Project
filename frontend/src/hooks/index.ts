@@ -6,6 +6,7 @@ export interface Blog {
   content: string;
   title: string;
   id: string;
+  published: string;
   author: {
     name: string;
   };
@@ -14,19 +15,20 @@ export interface Blog {
 export const useBlog = ({ id }: { id: string }) => {
   const [loading, setLoading] = useState(true);
   const [blog, setBlog] = useState<Blog>();
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
     axios
       .get(`${BACKEND_URL}/api/v1/blog/${id}`, {
         headers: {
-          Authorization: localStorage.getItem("token"),
+          Authorization: `Bearer ${token}`,
         },
       })
       .then((response) => {
-        setBlog(response.data.blog);
+        setBlog(response.data.post);
         setLoading(false);
       });
-  }, [id]);
+  }, [id, token]);
 
   return { loading, blog };
 };
@@ -34,19 +36,20 @@ export const useBlog = ({ id }: { id: string }) => {
 export const useBlogs = () => {
   const [loading, setLoading] = useState(true);
   const [blogs, setBlogs] = useState<Blog[]>([]);
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
     axios
       .get(`${BACKEND_URL}/api/v1/blog/bulk`, {
         headers: {
-          Authorization: localStorage.getItem("token"),
+          Authorization: `Bearer ${token}`,
         },
       })
       .then((response) => {
-        setBlogs(response.data.blog);
+        setBlogs(response.data.post);
         setLoading(false);
       });
-  }, []);
+  }, [token]);
 
   return {
     loading,

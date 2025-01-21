@@ -18,7 +18,7 @@ export const Register = () => {
         `${BACKEND_URL}/api/v1/user/signup`,
         postInputs
       );
-      const jwt = response.data;
+      const jwt = response.data.jwt;
       localStorage.setItem("token", jwt);
       navigate("/blogs");
     } catch (e) {

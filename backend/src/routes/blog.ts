@@ -18,7 +18,7 @@ blogRouter.use("/*", async (c, next) => {
   const jwt = c.req.header("Authorization");
   if (!jwt) {
     c.status(401);
-    return c.json({ error: "unauthorized" });
+    return c.json({ error: "unauthorized jwt" });
   }
 
   try {
@@ -27,7 +27,7 @@ blogRouter.use("/*", async (c, next) => {
 
     if (!payload) {
       c.status(401);
-      return c.json({ error: "unauthorized" });
+      return c.json({ error: "unauthorized: failed payload" });
     }
     c.set("userId", payload.id);
     await next();
@@ -99,7 +99,18 @@ blogRouter.get("/bulk", async (c) => {
     datasourceUrl: c.env?.DATABASE_URL,
   }).$extends(withAccelerate());
 
-  const post = await prisma.post.findMany();
+  const post = await prisma.post.findMany({
+    select: {
+      content: true,
+      title: true,
+      id: true,
+      author: {
+        select: {
+          name: true,
+        },
+      },
+    },
+  });
 
   return c.json({ post });
 });
@@ -115,6 +126,16 @@ blogRouter.get("/:id", async (c) => {
     const post = await prisma.post.findFirst({
       where: {
         id: id,
+      },
+      select: {
+        id: true,
+        title: true,
+        content: true,
+        author: {
+          select: {
+            name: true,
+          },
+        },
       },
     });
 
