@@ -2,6 +2,7 @@ import { useParams } from "react-router-dom";
 import { FullBlog } from "../components/FullBlog";
 import { CreateBlog } from "../components/CreateBlog";
 import { useBlog } from "../hooks";
+import { Spinner } from "../components/Spinner";
 
 export const Blog = () => {
   const { id } = useParams();
@@ -17,7 +18,9 @@ export const Blog = () => {
         <CreateBlog />
 
         <div className="h-screen flex flex-col justify-center">
-          <div className="flex justify-center"></div>
+          <div className="flex justify-center">
+            <Spinner />
+          </div>
         </div>
       </div>
     );
